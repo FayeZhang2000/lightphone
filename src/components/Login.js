@@ -10,36 +10,35 @@ import {
   InputContainer,
   InputLabel,
 } from "./StyledComponent";
-import { useState } from "react"; // 导入 useState
-import LoginService from "../api/LoginService"; // 导入 LoginService
-import { useNavigate } from "react-router-dom"; // 导入 useNavigate
+import { useState } from "react";
+import LoginService from "../api/LoginService";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const dispatch = useDispatch(); // 创建 dispatch
-  const navigate = useNavigate(); // 用于导航
-  const [email, setEmail] = useState(""); // 保存用户输入的邮箱
-  const [password, setPassword] = useState(""); // 保存用户输入的密码
-  const [errorMessage, setErrorMessage] = useState(""); // 保存错误信息
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // 🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡
   const loggedIn = useSelector((state) => state.user.loggedIn);
   const handleLogin = async () => {
     if (!email || !password) {
-      setErrorMessage("Please enter both email and password."); // 检查输入
+      setErrorMessage("Please enter both email and password.");
       return;
     }
-
-    console.log("Logging in with data:", { email, password }); // 打印要发送的数据
+    // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
+    console.log("Logging in with data:", { email, password });
 
     try {
-      // 调用登录 API
       const response = await LoginService.signIn({
         email,
         password,
       });
-      // 测试： 打印返回的数据 📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚
+      // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
       console.log("Login response data:", response.data);
-      // 检查登录是否成功
+
       if (response.data.success) {
         dispatch(setLoggedIn(true));
         dispatch(
@@ -49,15 +48,15 @@ const Login = () => {
             lastName: response.data.lastName,
           })
         );
-        // 将登录状态和用户信息存储到 localStorage
+
         localStorage.setItem("loggedIn", true);
         localStorage.setItem("email", email);
         localStorage.setItem("firstName", response.data.firstName);
         localStorage.setItem("lastName", response.data.lastName);
-        alert("Login successful!"); // 登录成功的提示
-        navigate("/"); // 导航到用户主页面
+        alert("Login successful!");
+        navigate("/activation");
       } else {
-        setErrorMessage("Invalid email or password. Please try again."); // 登录失败的提示
+        setErrorMessage("Invalid email or password. Please try again.");
       }
     } catch (error) {
       if (error.response) {
@@ -65,7 +64,7 @@ const Login = () => {
         alert(`Error: ${error.response.data.message || "An error occurred"}`);
       } else {
         console.error("Error during login:", error);
-        setErrorMessage("An error occurred. Please try again."); // 错误处理
+        setErrorMessage("An error occurred. Please try again.");
       }
     }
   };
@@ -79,23 +78,23 @@ const Login = () => {
       <InputContainer>
         <Input
           value={email}
-          onChange={(e) => setEmail(e.target.value)} // 更新邮箱状态
-          placeholder="Enter your email" // 提示用户输入邮箱
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
         />
         <InputLabel>Email</InputLabel>
       </InputContainer>
       <InputContainer>
         <Input
           value={password}
-          onChange={(e) => setPassword(e.target.value)} // 更新密码状态
-          placeholder="Enter your password" // 提示用户输入密码
-          type="password" // 设置为密码输入框
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter your password"
+          type="password"
         />
         <InputLabel>Password</InputLabel>
       </InputContainer>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}{" "}
       {/* 显示错误信息 */}
-      <Button onClick={handleLogin}>Continue</Button> {/* 点击按钮登录 */}
+      <Button onClick={handleLogin}>Continue</Button>
     </div>
   );
 };

@@ -1,15 +1,20 @@
 import styled from "styled-components";
 import { Button, Title, Description } from "./StyledComponent";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux"; // 引入 useDispatch 和 useSelector
+import { useDispatch, useSelector } from "react-redux";
 import { resetUser } from "../api/UserSlice";
-
+import { useEffect } from "react";
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const loggedIn = useSelector((state) => state.user.loggedIn); // 获取登录状态
+  const loggedIn = useSelector((state) => state.user.loggedIn);
   // const firstName = useSelector((state) => state.user.firstName); // 获取用户名字
+  useEffect(() => {
+    if (!loggedIn) {
+      navigate("/");
+    }
+  }, [loggedIn]);
   console.log("Logged In:", loggedIn);
   // console.log("First Name:", firstName);
   const handleRegister = () => {
@@ -22,7 +27,6 @@ const HomePage = () => {
 
   const handleLogout = () => {
     dispatch(resetUser()); // 重置用户状态
-    navigate("/"); // 返回主页
   };
 
   return (

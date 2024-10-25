@@ -13,10 +13,10 @@ import { useNavigate } from "react-router-dom";
 
 const EmailOTP = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 获取路由位置
-  const { email, firstName, lastName, password } = location.state || {}; // 使用默认值，避免解构时出错
+  const location = useLocation();
+  const { email, firstName, lastName, password } = location.state || {};
 
-  // 打印接收到的数据
+  // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
   console.log("Received data from Register:", {
     email,
     firstName,
@@ -24,12 +24,12 @@ const EmailOTP = () => {
     password,
   });
 
-  const [otp, setOtp] = useState(""); // 创建状态以保存 OTP
-  const [errorMessage, setErrorMessage] = useState(""); // 保存错误信息
+  const [otp, setOtp] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async () => {
     if (otp.length === 0) {
-      setErrorMessage("Please enter the OTP."); // 检查是否输入 OTP
+      setErrorMessage("Please enter the OTP.");
       return;
     }
 
@@ -39,20 +39,20 @@ const EmailOTP = () => {
         data: {
           email: email, // 使用从上一个组件传递的 email
           code: otp,
-          systemCode: "CA_SELFSERVE", // 直接硬编码，或根据需求进行调整
+          systemCode: "CA_SELFSERVE",
         },
       });
 
       // 检查激活是否成功
       if (response.data.success) {
-        alert("Account activated successfully!"); // 激活成功的提示
-        navigate("/login"); // 导航到登录页面
+        alert("Account activated successfully!");
+        navigate("/login");
       } else {
-        setErrorMessage("Invalid OTP. Please try again."); // 激活失败的提示
+        setErrorMessage("Invalid OTP. Please try again.");
       }
     } catch (error) {
       console.error("Error during OTP verification:", error);
-      setErrorMessage("An error occurred. Please try again."); // 错误处理
+      setErrorMessage("An error occurred. Please try again.");
     }
   };
 
@@ -62,13 +62,13 @@ const EmailOTP = () => {
       await SignUpService.resendActivationCode({
         data: {
           email: email,
-          systemCode: "CA_SELFSERVE", // 直接硬编码，或根据需求进行调整
+          systemCode: "CA_SELFSERVE",
         },
       });
-      alert("OTP has been resent to your email."); // 提示用户 OTP 已重新发送
+      alert("OTP has been resent to your email.");
     } catch (error) {
       console.error("Error during resending OTP:", error);
-      alert("An error occurred while resending OTP. Please try again."); // 错误处理
+      alert("An error occurred while resending OTP. Please try again.");
     }
   };
 
@@ -78,18 +78,16 @@ const EmailOTP = () => {
       <InputContainer>
         <Input
           value={otp}
-          onChange={(e) => setOtp(e.target.value)} // 更新 OTP 状态
-          placeholder="Enter OTP" // 提示用户输入 OTP
+          onChange={(e) => setOtp(e.target.value)}
+          placeholder="Enter OTP"
         />
         <InputLabel>OTP</InputLabel>
       </InputContainer>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}{" "}
-      {/* 显示错误信息 */}
-      <button onClick={handleSubmit}>Continue</button> {/* 点击按钮验证 OTP */}
+      <button onClick={handleSubmit}>Continue</button>
       <Button onClick={handleResendOTP} style={{ marginTop: "10px" }}>
         Resend OTP
       </Button>{" "}
-      {/* 重新发送 OTP 的按钮 */}
     </div>
   );
 };

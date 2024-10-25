@@ -1,21 +1,20 @@
-import { identityInstance } from "./axios"; // 确保路径正确
+import { identityInstance } from "./axios";
 
 const LoginService = {
   // 用户登录
   signIn: async (data) => {
     try {
-      // 将数据封装在 Data 对象内
       const response = await identityInstance.post("/Auth/v1/signin", {
         Data: {
-          Username: data.email, // 使用 email 作为 Username
-          Password: data.password, // 使用 password
-          SystemCode: "CA_SELFSERVE", // 硬编码 SystemCode
+          Username: data.email,
+          Password: data.password,
+          SystemCode: "CA_SELFSERVE",
         },
       });
       return response;
     } catch (error) {
       console.error("Error during login:", error);
-      throw error; // 抛出错误以供后续处理
+      throw error;
     }
   },
 
