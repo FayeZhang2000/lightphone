@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignUpService from "../api/SignUpService";
 
-// 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢
+//   🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡
 const Register = () => {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
@@ -18,7 +18,7 @@ const Register = () => {
     lastName: "",
     password: "",
   });
-  // 1️⃣ 失焦时验证🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢
+  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢1️⃣ 失焦时验证
   const validateOnBlur = () => {
     const _validationErrors = {
       email: "",
@@ -51,7 +51,7 @@ const Register = () => {
     setValidationErrors(_validationErrors);
   };
 
-  // 2️⃣ 点击按钮时验证🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢
+  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢2️⃣ 点击按钮时验证
   const validateOnPressCreateAccount = async () => {
     console.log("Button clicked");
     validateOnBlur(); // 在点击按钮时再次验证输入
@@ -61,16 +61,16 @@ const Register = () => {
       return; // 如果有错误，则停止执行
     }
 
-    await onPressCreateAnAccount(); //这个函数是异步的
+    await onPressCreateAnAccount();
   };
-  // 3️⃣ 输入验证的逻辑 - email🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢
+  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢3️⃣ 输入验证的逻辑 - email
   const validateEmail = (email) => {
     //   ❗️后面加回来！🔴🔴🔴🔴🔴🔴🔴🔴🔴
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     // return emailRegex.test(email);
     return email;
   };
-  // 3️⃣ 输入验证的逻辑 - password
+  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢3️⃣ 输入验证的逻辑 - password
   const validatePassword = (password) => {
     return (
       password.length >= 8 &&
@@ -79,7 +79,7 @@ const Register = () => {
       /[\W_]/.test(password)
     );
   };
-  // 4️⃣ 处理OTP🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢
+  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢4️⃣ 处理OTP
   const onPressCreateAnAccount = async () => {
     console.log("Account creation logic fire.");
     try {
@@ -90,14 +90,12 @@ const Register = () => {
           systemCode: "CA_SELFSERVE",
         },
       });
-
       // 处理邮箱验证结果
       if (emailValidationResponse.data.devMessage === "AccountAlreadyExists") {
         alert("Email already exists. Please sign in.");
         return;
       }
-
-      // 打印将要发送的数据
+      // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
       console.log({
         firstName,
         lastName,
@@ -105,7 +103,7 @@ const Register = () => {
         password,
         systemCode: "CA_SELFSERVE",
       });
-
+      // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
       // 发送注册请求
       const signUpResponse = await SignUpService.signUp({
         data: {
@@ -116,7 +114,6 @@ const Register = () => {
           systemCode: "CA_SELFSERVE",
         },
       });
-
       // 检查注册是否成功
       if (signUpResponse.data.success) {
         alert("Registration successful! Sending OTP to your email...");
@@ -126,8 +123,6 @@ const Register = () => {
             systemCode: "CA_SELFSERVE",
           },
         });
-
-        // 导航到 EmailOTP 组件
         navigate("/emailcode", {
           state: {
             firstName,
@@ -155,13 +150,12 @@ const Register = () => {
   return (
     <div className="container">
       <Title>Register</Title>
-
       {/* 1️⃣ 名字 */}
       <InputContainer>
         <Input
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
-          onBlur={validateOnBlur} // 失去焦点时验证
+          onBlur={validateOnBlur}
           error={validationErrors.firstName}
         />
         <InputLabel>First name</InputLabel>
@@ -175,14 +169,13 @@ const Register = () => {
         <Input
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
-          onBlur={validateOnBlur} // 失去焦点时验证
+          onBlur={validateOnBlur}
           error={validationErrors.lastName}
         />
         <InputLabel>Last name</InputLabel>
         {validationErrors.lastName && (
           <p style={{ color: "red" }}>{validationErrors.lastName}</p>
         )}{" "}
-        {/* 显示错误信息 */}
       </InputContainer>
 
       {/* 3️⃣ 邮箱 */}
@@ -190,14 +183,13 @@ const Register = () => {
         <Input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          onBlur={validateOnBlur} // 失去焦点时验证
+          onBlur={validateOnBlur}
           error={validationErrors.email}
         />
         <InputLabel>Email</InputLabel>
         {validationErrors.email && (
           <p style={{ color: "red" }}>{validationErrors.email}</p>
         )}{" "}
-        {/* 显示错误信息 */}
       </InputContainer>
 
       {/* 4️⃣ 密码 */}
@@ -205,15 +197,14 @@ const Register = () => {
         <Input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          onBlur={validateOnBlur} // 失去焦点时验证
-          type="password" // 设置为密码输入框
+          onBlur={validateOnBlur}
+          type="password"
           error={validationErrors.password}
         />
         <InputLabel>Password</InputLabel>
         {validationErrors.password && (
           <p style={{ color: "red" }}>{validationErrors.password}</p>
         )}{" "}
-        {/* 显示错误信息 */}
       </InputContainer>
       <Button onClick={validateOnPressCreateAccount}>Select</Button>
     </div>

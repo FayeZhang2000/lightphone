@@ -21,7 +21,11 @@ const userSlice = createSlice({
       state.lastName = lastName;
     },
     resetUser(state) {
-      Object.assign(state, initialState);
+      state.loggedIn = false;
+      state.email = "";
+      state.firstName = "";
+      state.lastName = "";
+
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("email");
       localStorage.removeItem("firstName");
