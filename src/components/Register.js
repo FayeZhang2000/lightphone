@@ -1,11 +1,15 @@
 import styled from "styled-components";
 import { Button, Title } from "./StyledComponent";
-import { Input, InputContainer, InputLabel } from "./StyledComponent";
+import {
+  Input,
+  InputContainer,
+  InputLabel,
+  ErrorMessage,
+} from "./StyledComponent";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignUpService from "../api/SignUpService";
-
-//   🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡
+import { colors } from "./Constants";
 const Register = () => {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
@@ -18,7 +22,6 @@ const Register = () => {
     lastName: "",
     password: "",
   });
-  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢1️⃣ 失焦时验证
   const validateOnBlur = () => {
     const _validationErrors = {
       email: "",
@@ -29,7 +32,6 @@ const Register = () => {
 
     let isError = false;
 
-    // 输入验证
     if (firstName.trim() === "") {
       _validationErrors.firstName = "First Name is required";
       isError = true;
@@ -51,26 +53,21 @@ const Register = () => {
     setValidationErrors(_validationErrors);
   };
 
-  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢2️⃣ 点击按钮时验证
   const validateOnPressCreateAccount = async () => {
-    console.log("Button clicked");
-    validateOnBlur(); // 在点击按钮时再次验证输入
+    validateOnBlur();
 
-    // 检查是否存在错误
     if (Object.values(validationErrors).some((error) => error)) {
-      return; // 如果有错误，则停止执行
+      return;
     }
 
     await onPressCreateAnAccount();
   };
-  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢3️⃣ 输入验证的逻辑 - email
+
   const validateEmail = (email) => {
-    //   ❗️后面加回来！🔴🔴🔴🔴🔴🔴🔴🔴🔴
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // return emailRegex.test(email);
-    return email;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
-  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢3️⃣ 输入验证的逻辑 - password
+
   const validatePassword = (password) => {
     return (
       password.length >= 8 &&
@@ -79,23 +76,21 @@ const Register = () => {
       /[\W_]/.test(password)
     );
   };
-  // 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢4️⃣ 处理OTP
+  //ANCHOR - deal with otp
   const onPressCreateAnAccount = async () => {
-    console.log("Account creation logic fire.");
     try {
-      // 验证邮箱是否已存在
       const emailValidationResponse = await SignUpService.validateEmail({
         data: {
           email: email,
           systemCode: "CA_SELFSERVE",
         },
       });
-      // 处理邮箱验证结果
+
       if (emailValidationResponse.data.devMessage === "AccountAlreadyExists") {
         alert("Email already exists. Please sign in.");
         return;
       }
-      // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
+      //REVIEW -
       console.log({
         firstName,
         lastName,
@@ -103,8 +98,6 @@ const Register = () => {
         password,
         systemCode: "CA_SELFSERVE",
       });
-      // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
-      // 发送注册请求
       const signUpResponse = await SignUpService.signUp({
         data: {
           firstName: firstName,
@@ -114,7 +107,7 @@ const Register = () => {
           systemCode: "CA_SELFSERVE",
         },
       });
-      // 检查注册是否成功
+
       if (signUpResponse.data.success) {
         alert("Registration successful! Sending OTP to your email...");
         await SignUpService.resendActivationCode({
@@ -146,11 +139,11 @@ const Register = () => {
       }
     }
   };
-  //   🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡
+  //SECTION - render
   return (
     <div className="container">
       <Title>Register</Title>
-      {/* 1️⃣ 名字 */}
+      {/* 1️⃣ name */}
       <InputContainer>
         <Input
           value={firstName}
@@ -160,11 +153,10 @@ const Register = () => {
         />
         <InputLabel>First name</InputLabel>
         {validationErrors.firstName && (
-          <p style={{ color: "red" }}>{validationErrors.firstName}</p>
+          <ErrorMessage>{validationErrors.firstName}</ErrorMessage>
         )}
       </InputContainer>
-
-      {/* 2️⃣ 姓氏 */}
+      {/* 2️⃣ family name */}
       <InputContainer>
         <Input
           value={lastName}
@@ -174,11 +166,10 @@ const Register = () => {
         />
         <InputLabel>Last name</InputLabel>
         {validationErrors.lastName && (
-          <p style={{ color: "red" }}>{validationErrors.lastName}</p>
-        )}{" "}
+          <ErrorMessage>{validationErrors.lastName}</ErrorMessage>
+        )}
       </InputContainer>
-
-      {/* 3️⃣ 邮箱 */}
+      {/* 3️⃣ email */}
       <InputContainer>
         <Input
           value={email}
@@ -188,11 +179,10 @@ const Register = () => {
         />
         <InputLabel>Email</InputLabel>
         {validationErrors.email && (
-          <p style={{ color: "red" }}>{validationErrors.email}</p>
-        )}{" "}
+          <ErrorMessage>{validationErrors.email}</ErrorMessage>
+        )}
       </InputContainer>
-
-      {/* 4️⃣ 密码 */}
+      {/* 4️⃣ password */}
       <InputContainer>
         <Input
           value={password}
@@ -202,11 +192,13 @@ const Register = () => {
           error={validationErrors.password}
         />
         <InputLabel>Password</InputLabel>
-        {validationErrors.password && (
-          <p style={{ color: "red" }}>{validationErrors.password}</p>
-        )}{" "}
       </InputContainer>
-      <Button onClick={validateOnPressCreateAccount}>Select</Button>
+      {validationErrors.password && (
+        <p style={{ color: colors.error, fontSize: "9px", fontWeight: "bold" }}>
+          {validationErrors.password}
+        </p>
+      )}{" "}
+      <Button onClick={validateOnPressCreateAccount}>Submit</Button>
     </div>
   );
 };

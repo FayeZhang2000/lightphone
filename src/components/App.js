@@ -1,5 +1,7 @@
 import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import GlobalStyle from "./GlobalStyle";
 import styled from "styled-components";
 import Header from "./Header";
@@ -17,13 +19,13 @@ import Checkout from "./Checkout";
 import PhoneNumber from "./PhoneNumber";
 import Portin from "./Portin";
 import Summary from "./Summary";
-import { useSelector } from "react-redux";
+import MyPlans from "../Self/1_Myplans";
 
 const AppWrapper = styled.div`
-  border: 3px solid black;
+  /* border: 3px solid black; */
   height: 100vh;
   width: 50%;
-  max-width: 500px;
+  max-width: 400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -31,7 +33,7 @@ const AppWrapper = styled.div`
 `;
 
 const App = () => {
-  const loggedIn = useSelector((state) => state.user.loggedIn); // 获取登录状态
+  const loggedIn = useSelector((state) => state.user.loggedIn);
 
   return (
     <AppWrapper>
@@ -40,12 +42,14 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="*" element={<Navigate to="/" />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
           <Route
-            path="/emailcode"
-            element={loggedIn ? <EmailOTP /> : <Navigate to="/login" />}
+            path="/login"
+            element={loggedIn ? <Navigate to="/" /> : <Login />}
           />
+          //FIXME - change it back latter
+          <Route path="/emailcode" element={<EmailOTP />} />
           <Route
             path="/activation"
             element={loggedIn ? <Activation /> : <Navigate to="/login" />}
@@ -58,10 +62,12 @@ const App = () => {
             path="/plansDetail"
             element={loggedIn ? <PlansDetail /> : <Navigate to="/login" />}
           />
-          <Route
+          //FIXME - change it back latter
+          {/* <Route
             path="/personalInfo"
             element={loggedIn ? <PersonalInfo /> : <Navigate to="/login" />}
-          />
+          /> */}
+          <Route path="/personalInfo" element={<PersonalInfo />} />
           <Route
             path="/payment"
             element={loggedIn ? <Payment /> : <Navigate to="/login" />}
@@ -82,6 +88,8 @@ const App = () => {
             path="/summary"
             element={loggedIn ? <Summary /> : <Navigate to="/login" />}
           />
+          //FIXME - add restriction ↓
+          <Route path="/myplans" element={<MyPlans />} />
         </Routes>
         <Footer />
       </BrowserRouter>
