@@ -1,78 +1,143 @@
 import styled from "styled-components";
-import { Title } from "./StyledComponent";
+import { Title, SubTitle } from "./StyledComponent";
 import { Description } from "./StyledComponent";
-import { InputContainer, Input, InputLabel } from "./StyledComponent";
+import {
+  InputContainer,
+  Input,
+  InputLabel,
+  SectionContainer,
+} from "./StyledComponent";
 import { Button } from "./StyledComponent";
 import { BreakPoint } from "./StyledComponent";
 import { Box } from "./StyledComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { simActivationInstance } from "../api/axios";
+import {
+  setFirstName,
+  setLastName,
+  setEmail,
+  setConfirmEmail,
+  setProvince,
+  setCity,
+  setPhoneNumber,
+  setCarrier,
+  setAccountNumber,
+  setImeiNumber,
+  setPortIn,
+  setSimCardNumber,
+  storeUserInfoInLocalStorage,
+  setPlanDetails,
+  setSummaryDetails,
+} from "../api/UserInfoSlice";
+
 const Checkout = () => {
+  const navigate = useNavigate();
+  const {
+    firstName,
+    lastName,
+    email,
+    confirmEmail,
+    province,
+    city,
+    phoneNumber,
+    carrier,
+    accountNumber,
+    imeiNumber,
+    portIn,
+    simCardNumber,
+    planDetails,
+    summaryDetails,
+  } = useSelector((state) => state.userInfo);
+  const getEndDate = () => {
+    const today = new Date();
+    const endDate = new Date(today.setDate(today.getDate() + 30));
+    return endDate.toISOString().split("T")[0];
+  };
+  const handleNext = async () => {
+    try {
+      const response = await simActivationInstance.post(
+        "/api/Activation/PostActivationInfoPrepaid",
+        {
+          simcardOrder: true,
+          simcard_no: simCardNumber || "",
+          startDate: new Date().toISOString().split("T")[0],
+          endDate: getEndDate(),
+          planId: 1689,
+          firstName,
+          lastName,
+          email,
+          serviceType: "M",
+          portin_carrier: carrier,
+          portin_accountNo: accountNumber,
+          portin_phoneNo: phoneNumber,
+          portin_IMEI: imeiNumber,
+          service_countryId: 42,
+          service_province: province,
+          service_city: city,
+          delivery_countryId: 0,
+          delivery_province: "",
+          delivery_address: "",
+          delivery_postal: "",
+          currency: "CAD",
+          simcard_fee: 0,
+          prorate_fee: 0,
+          charge_duration: 0,
+          plan_fee: planDetails.plan_Amt,
+          gst_rate: planDetails.gst_rate,
+          pst_rate: planDetails.pst_rate,
+          gst_amt: planDetails.gst_Amt,
+          pst_amt: planDetails.pst_Amt,
+          subtotal: planDetails.subtotal,
+          total: planDetails.total,
+          promocode: "",
+          promocredit: 0,
+          bizId: 0,
+          sfID: 0,
+          referral_cnum: "",
+          consent_cem: true,
+          shipping_contact_number: "",
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("checkout response data", response);
+        navigate("/payment");
+      } else {
+        console.error("failed:", response.error);
+      }
+    } catch (error) {
+      console.error("Error occurred during activation:", error);
+    }
+  };
   return (
     <div className="container">
       <Title>Checkout</Title>
-      <Box>
-        <span style={{ fontSize: "24px" }}>Light Plan</span>
-        <span style={{ fontSize: "24px" }}>$30/month</span>
-        <span style={{ fontSize: "14px" }}>
-          Unlimited Calls & Messages with 1GB of Data
-        </span>
-      </Box>
-      <Title style={{ fontSize: "20px" }}>Account Details</Title>
-      <Label>Full Name</Label>
-      <DetailRow>
-        <Value>test</Value>
-        <Arrow>➔</Arrow>
-      </DetailRow>
 
-      <Label>Home Address</Label>
-      <DetailRow>
-        <Address>
-          <AddressLine>112 N Main St</AddressLine>
-          <AddressLine>British Columbia</AddressLine>
-          <AddressLine>Windsor, NJ 08561</AddressLine>
-          <AddressLine>United States</AddressLine>
-        </Address>
-        <Arrow>➔</Arrow>
-      </DetailRow>
+      <SubTitle>Plan Details</SubTitle>
+      <SectionContainer>
+        <p>Currency: {planDetails?.currency || "N/A"}</p>
+        <p>Plan Amount: {planDetails?.plan_Amt || "N/A"}</p>
+        <p>Duration: {planDetails?.charge_Duration || "N/A"}</p>
+        <p>Subtotal: {planDetails?.subtotal || "N/A"}</p>
+        <p>GST: {planDetails?.gst_Amt || "N/A"}</p>
+        <p>PST: {planDetails?.pst_Amt || "N/A"}</p>
+        <p>Sim Card Fee: {planDetails?.simcard_amt || "N/A"}</p>
+        <p>Total: {planDetails?.total || "N/A"}</p>
+      </SectionContainer>
 
-      <Button>Pay Now</Button>
+      <SubTitle>Summary</SubTitle>
+      <SectionContainer>
+        <p>Name: {summaryDetails?.name || "N/A"}</p>
+        <p>Email: {summaryDetails?.email || "N/A"}</p>
+        <p>Activation Date: {summaryDetails?.activationDate || "N/A"}</p>
+      </SectionContainer>
+
+      <Button onClick={handleNext}>Proceed to Payment</Button>
     </div>
   );
 };
-const DetailRow = styled.div`
-  display: flex; /* 使用 Flexbox 布局 */
-  align-items: center; /* 垂直居中 */
-  margin-bottom: 15px; /* 每一行的间距 */
-  border-bottom: 1px solid #d3d5d8;
-`;
 
-const Label = styled.span`
-  font-weight: bold;
-  display: block; /* 占据一整行 */
-  margin: 15px 0;
-  flex: 1; /* 使标签占据可用空间 */
-`;
-
-const Value = styled.span`
-  font-size: 16px;
-  color: #333; /* 可根据需要调整颜色 */
-  flex: 2; /* 使值占据更多空间 */
-`;
-
-const Arrow = styled.span`
-  font-size: 20px; /* 调整箭头大小 */
-  margin-left: 10px; /* 左侧间距 */
-  color: #606774; /* 箭头颜色 */
-  flex: 0; /* 使箭头仅占用必要空间 */
-`;
-
-const Address = styled.div`
-  margin-top: 5px; /* 地址与标签之间的间距 */
-  flex: 2; /* 使地址占据更多空间 */
-`;
-
-const AddressLine = styled.div`
-  font-size: 16px; /* 可根据需要调整字体大小 */
-  color: #333; /* 可根据需要调整颜色 */
-`;
+// Styled Components
 
 export default Checkout;

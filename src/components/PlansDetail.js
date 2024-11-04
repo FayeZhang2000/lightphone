@@ -5,8 +5,12 @@ import { Input } from "./StyledComponent";
 import { Button } from "./StyledComponent";
 import { BreakPoint } from "./StyledComponent";
 import { Box } from "./StyledComponent";
-
+import { useNavigate } from "react-router-dom";
 const PlansDetail = () => {
+  const navigate = useNavigate();
+  const handleNext = () => {
+    navigate("/personalInfo");
+  };
   return (
     <div className="container">
       <Title>Plan detail </Title>
@@ -44,7 +48,7 @@ const PlansDetail = () => {
         </OverviewItem>
       </PlanOverview>
 
-      <Button>Select Plan </Button>
+      <Button onClick={handleNext}>Select Plan </Button>
     </div>
   );
 };

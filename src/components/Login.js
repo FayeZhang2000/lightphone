@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { setLoggedIn } from "../api/UserSlice";
-import { setUserDetails } from "../api/UserSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoggedIn, setUserDetails } from "../api/UserSlice";
 import {
   Button,
   Title,
@@ -11,6 +9,7 @@ import {
   InputLabel,
 } from "./StyledComponent";
 import { useState } from "react";
+import { LuRedoDot } from "react-icons/lu";
 import LoginService from "../api/LoginService";
 import { useNavigate } from "react-router-dom";
 
@@ -20,25 +19,19 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // 🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡
   const loggedIn = useSelector((state) => state.user.loggedIn);
+
   const handleLogin = async () => {
     if (!email || !password) {
       setErrorMessage("Please enter both email and password.");
       return;
     }
-    // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
-    console.log("Logging in with data:", { email, password });
 
+    setLoading(true);
     try {
-      const response = await LoginService.signIn({
-        email,
-        password,
-      });
-      // 📍📍📍📍📍📍📍📍📍临时打印📍📍📍📍📍📍📍📍📍📍
-      console.log("Login response data:", response.data);
-
+      const response = await LoginService.signIn({ email, password });
       if (response.data.success) {
         dispatch(setLoggedIn(true));
         dispatch(
@@ -59,44 +52,51 @@ const Login = () => {
         setErrorMessage("Invalid email or password. Please try again.");
       }
     } catch (error) {
-      if (error.response) {
-        console.error("Error response data:", error.response.data);
-        alert(`Error: ${error.response.data.message || "An error occurred"}`);
-      } else {
-        console.error("Error during login:", error);
-        setErrorMessage("An error occurred. Please try again.");
-      }
+      setErrorMessage("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
-  console.log("User logged in state:", {
-    loggedIn,
-  });
-  // 🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡
+
   return (
     <div className="container">
       <Title>Login</Title>
       <InputContainer>
-        <Input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-        />
+        <Input value={email} onChange={(e) => setEmail(e.target.value)} />
         <InputLabel>Email</InputLabel>
       </InputContainer>
       <InputContainer>
         <Input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password"
           type="password"
         />
         <InputLabel>Password</InputLabel>
       </InputContainer>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}{" "}
-      {/* 显示错误信息 */}
-      <Button onClick={handleLogin}>Continue</Button>
+      {errorMessage && (
+        <p style={{ color: "red", fontSize: "10px", fontWeight: "bold" }}>
+          {errorMessage}
+        </p>
+      )}
+      <Button onClick={handleLogin} disabled={loading}>
+        {loading ? <LoadingIcon /> : "Continue"}
+      </Button>
     </div>
   );
 };
+
+const LoadingIcon = styled(LuRedoDot)`
+  animation: rotate 1s linear infinite;
+  font-size: 1.5rem;
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
 
 export default Login;
