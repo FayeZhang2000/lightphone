@@ -19,7 +19,13 @@ import Checkout from "./Checkout";
 import PhoneNumber from "./PhoneNumber";
 import Portin from "./Portin";
 import Summary from "./Summary";
-import MyPlans from "../Self/1_Myplans";
+import MyPlan from "../Self/1_Myplan/1_Myplan";
+import Subscription from "../Self/2_Subscription/2_Subscription";
+import SubscriptionSetting from "../Self/2_Subscription/SubscriptionSetting";
+import CancelSubscription from "../Self/2_Subscription/CancelSubscription";
+import TopUpCheckout from "../Self/2_Subscription/TopUpCheckout";
+import SimCard from "../Self/2_Subscription/SIMcard";
+import Setting from "../Self/3_Setting/3_Setting";
 
 const AppWrapper = styled.div`
   /* border: 3px solid black; */
@@ -89,7 +95,22 @@ const App = () => {
             element={loggedIn ? <Summary /> : <Navigate to="/login" />}
           />
           //FIXME - add restriction ↓
-          <Route path="/myplans" element={<MyPlans />} />
+          <Route path="/myplan" element={<MyPlan />} />
+          <Route path="subscription" element={<Subscription />} />
+          <Route path="Setting" element={<Setting />} />
+          <Route
+            path="/subscription/subscriptionSetting"
+            element={<SubscriptionSetting />}
+          />
+          <Route
+            path="/subscription/cancelSubscription"
+            element={<CancelSubscription />}
+          />
+          <Route
+            path="/subscription/topupCheckout"
+            element={<TopUpCheckout />}
+          />
+          <Route path="/subscription/SIMcard" element={<SimCard />} />
         </Routes>
         <Footer />
       </BrowserRouter>

@@ -65,7 +65,7 @@ export const ErrorMessage = styled.span`
 
 export const Box = styled.div`
   width: 100%;
-  height: 25%;
+  /* height: 25%; */
   font-family: "Arima", system-ui;
   padding: 40px;
   border: 2px solid ${colors.background};

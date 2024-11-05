@@ -242,8 +242,8 @@ const PersonalInfo = () => {
         "/api/Activation/GetTotalPrepaid",
         {
           params: {
-            orderSimcard: true,
-            planId: 1689, //TODO - use real PLAN ID
+            orderSimcard: false,
+            planId: 1753, //TODO - use real PLAN ID
             countryId: 42, // Canada
             provinceCode: province, // User-selected province
             start: new Date().toISOString().split("T")[0], // Today's date

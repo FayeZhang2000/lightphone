@@ -10,7 +10,8 @@ export const instance = axios.create({ baseURL: BASE_API_URL });
 export const identityInstance = axios.create({ baseURL: IDENTITY_API_URL });
 //FIXME - change to new Base URL
 export const simActivationInstance = axios.create({
-  baseURL: "https://phoneboxapi.azurewebsites.net",
+  // baseURL: "https://phoneboxapi.azurewebsites.net",
+  baseURL: "https://testmyaccount.azurewebsites.net",
   timeout: 60000,
   headers: {
     apitoken: "75e142e9fd9decba5da64d86874ce5b6",

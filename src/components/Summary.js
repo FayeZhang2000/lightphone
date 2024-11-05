@@ -10,7 +10,7 @@ const Summary = () => {
   );
 
   const handleNext = () => {
-    navigate("/myplans"); //
+    navigate("/myplan");
   };
 
   return (
