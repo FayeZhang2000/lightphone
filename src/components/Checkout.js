@@ -59,11 +59,11 @@ const Checkout = () => {
       const response = await simActivationInstance.post(
         "/api/Activation/PostActivationInfoPrepaid",
         {
-          simcardOrder: true,
+          simcardOrder: false,
           simcard_no: simCardNumber || "",
           startDate: new Date().toISOString().split("T")[0],
           endDate: getEndDate(),
-          planId: 1689,
+          planId: 1753,
           firstName,
           lastName,
           email,
